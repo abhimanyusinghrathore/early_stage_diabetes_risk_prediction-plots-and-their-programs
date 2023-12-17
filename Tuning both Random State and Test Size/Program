@@ -1,0 +1,58 @@
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+from sklearn.svm import SVC
+
+# Data preprocessing
+df = pd.read_csv('diabetes_risk_prediction_dataset.csv')
+df['Gender'] = df['Gender'].replace({'Male': 1, 'Female': 0})
+df['Polyuria'] = df['Polyuria'].replace({'Yes': 1, 'No': 0})
+df['Polydipsia'] = df['Polydipsia'].replace({'Yes': 1, 'No': 0})
+df['sudden weight loss'] = df['sudden weight loss'].replace({'Yes': 1, 'No': 0})
+df['weakness'] = df['weakness'].replace({'Yes': 1, 'No': 0})
+df['Polyphagia'] = df['Polyphagia'].replace({'Yes': 1, 'No': 0})
+df['Genital thrush'] = df['Genital thrush'].replace({'Yes': 1, 'No': 0})
+df['visual blurring'] = df['visual blurring'].replace({'Yes': 1, 'No': 0})
+df['Itching'] = df['Itching'].replace({'Yes': 1, 'No': 0})
+df['Irritability'] = df['Irritability'].replace({'Yes': 1, 'No': 0})
+df['delayed healing'] = df['delayed healing'].replace({'Yes': 1, 'No': 0})
+df['partial paresis'] = df['partial paresis'].replace({'Yes': 1, 'No': 0})
+df['muscle stiffness'] = df['muscle stiffness'].replace({'Yes': 1, 'No': 0})
+df['Alopecia'] = df['Alopecia'].replace({'Yes': 1, 'No': 0})
+df['Obesity'] = df['Obesity'].replace({'Yes': 1, 'No': 0})
+
+# Data separating
+X = df.drop('class', axis=1)
+Y = df['class']
+
+accuracy_data = {
+    'Random_State': [],
+    'Test_Size': [],
+    'Accuracy': []
+}
+
+for n in range(150):
+    for m in range(20, 99):
+        m = m / 100
+        # Data splitting
+        X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=m, random_state=n)
+
+        # Model selection and training
+        modelSVM = SVC(kernel='linear')
+        modelSVM.fit(X_train, Y_train)
+
+        # Model evaluation
+        Y_predSVM = modelSVM.predict(X_test)
+
+        accSVM = round(accuracy_score(Y_test, Y_predSVM) * 100, 2)
+
+        accuracy_data['Random_State'].append(n)
+        accuracy_data['Test_Size'].append(m)
+        accuracy_data['Accuracy'].append(accSVM)
+
+# Create DataFrame
+accuracy_df = pd.DataFrame(accuracy_data)
+# Sort DataFrame by 'Accuracy' column in descending order
+top_accuracy_df = accuracy_df.sort_values(by='Accuracy', ascending=False)
+# Print top 20 points
+print(top_accuracy_df.head(30))
