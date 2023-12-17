@@ -1,0 +1,60 @@
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+from sklearn.svm import SVC
+import matplotlib.pyplot as plt
+
+# Loading the dataset
+df = pd.read_csv('diabetes_risk_prediction_dataset.csv')
+
+df['Gender'] = df['Gender'].replace({'Male':1,'Female':0})
+df['Polyuria'] = df['Polyuria'].replace({'Yes':1,'No':0})
+df['Polydipsia'] = df['Polydipsia'].replace({'Yes':1,'No':0})
+df['sudden weight loss'] = df['sudden weight loss'].replace({'Yes':1,'No':0})
+df['weakness'] = df['weakness'].replace({'Yes':1,'No':0})
+df['Polyphagia'] = df['Polyphagia'].replace({'Yes':1,'No':0})
+df['Genital thrush'] = df['Genital thrush'].replace({'Yes':1,'No':0})
+df['visual blurring'] = df['visual blurring'].replace({'Yes':1,'No':0})
+df['Itching'] = df['Itching'].replace({'Yes':1,'No':0})
+df['Irritability'] = df['Irritability'].replace({'Yes':1,'No':0})
+df['delayed healing'] = df['delayed healing'].replace({'Yes':1,'No':0})
+df['partial paresis'] = df['partial paresis'].replace({'Yes':1,'No':0})
+df['muscle stiffness'] = df['muscle stiffness'].replace({'Yes':1,'No':0})
+df['Alopecia'] = df['Alopecia'].replace({'Yes':1,'No':0})
+df['Obesity'] = df['Obesity'].replace({'Yes':1,'No':0})
+df['class'] = df['class'].replace({'Positive': 1, 'Negative': 0})
+
+# Data separating
+X = df.drop('class', axis=1)
+Y = df['class']
+
+accuracySVM = []
+N=['linear','rbf','poly','sigmoid']
+p=[]
+for n in range(4):
+    k=str(N[n])
+
+    X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=.21, random_state=53)
+     
+    modelSVM = SVC(kernel=k)
+    modelSVM.fit(X_train, Y_train)
+        
+    # Data prediction
+    Y_predSVM = modelSVM.predict(X_test)
+        
+    accSVM = round(accuracy_score(Y_test, Y_predSVM)*100,2)
+    accuracySVM.append(accSVM)
+    
+    p.append(n)
+
+# Plotting kernel types vs % accuracy
+plt.figure(figsize=(10, 6))
+plt.bar(p,accuracySVM,color='blue')
+plt.xlabel('Kernel types')
+plt.ylabel('Accuracy (%)')
+plt.title('Kernel types vs % accuracy')
+x_labels = ['linear','rbf','poly','sigmoid']
+plt.xticks(p, x_labels,rotation = 45)
+plt.yticks(range(5, 101, 5))
+plt.grid(axis='y')
+
