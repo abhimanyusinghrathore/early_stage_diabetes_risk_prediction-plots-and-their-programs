@@ -1,1 +1,47 @@
+# Load the libraries
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+from sklearn.svm import SVC
+
+# Load the dataset CSV file
+df = pd.read_csv('diabetes_risk_prediction_dataset.csv')
+
+# Data preprocessing
+df['Gender'] = df['Gender'].replace({'Male':1,'Female':0})
+df['Polyuria'] = df['Polyuria'].replace({'Yes':1,'No':0})
+df['Polydipsia'] = df['Polydipsia'].replace({'Yes':1,'No':0})
+df['sudden weight loss'] = df['sudden weight loss'].replace({'Yes':1,'No':0})
+df['weakness'] = df['weakness'].replace({'Yes':1,'No':0})
+df['Polyphagia'] = df['Polyphagia'].replace({'Yes':1,'No':0})
+df['Genital thrush'] = df['Genital thrush'].replace({'Yes':1,'No':0})
+df['visual blurring'] = df['visual blurring'].replace({'Yes':1,'No':0})
+df['Itching'] = df['Itching'].replace({'Yes':1,'No':0})
+df['Irritability'] = df['Irritability'].replace({'Yes':1,'No':0})
+df['delayed healing'] = df['delayed healing'].replace({'Yes':1,'No':0})
+df['partial paresis'] = df['partial paresis'].replace({'Yes':1,'No':0})
+df['muscle stiffness'] = df['muscle stiffness'].replace({'Yes':1,'No':0})
+df['Alopecia'] = df['Alopecia'].replace({'Yes':1,'No':0})
+df['Obesity'] = df['Obesity'].replace({'Yes':1,'No':0})
+df['class'] = df['class'].replace({'Positive': 1, 'Negative': 0})
+
+X = df.drop('class', axis=1)
+Y = df['class']
+
+# Print data
+print(X)
+print(Y)
+
+# Data Splitting
+X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.21, random_state=53)
+
+# Model selection and training
+model2SVM = SVC(kernel='linear')
+model2SVM.fit(X_train, Y_train)
+
+# Data prediction
+Y_pred2SVM = model2SVM.predict(X_test)
+
+# Print model results
+print("\nSVM Accuracy: {} %".format(round(accuracy_score(Y_test, Y_pred2SVM)*100,2)))
 
